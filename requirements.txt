@@ -1,0 +1,9 @@
+flask
+flask-smorest
+python-dotenv
+requests
+flask-jwt-extended
+passlib
+gunicorn
+flask-injector
+tenacity
