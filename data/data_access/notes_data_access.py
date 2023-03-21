@@ -1,6 +1,10 @@
+# Copyright (c) 2023 Daniel Gabay
+
+from http import HTTPStatus
+
 from flask_injector import inject
 
-from crud_handler import RequestHandler
+from data.data_access.crud_handler import RequestHandler
 from di.wrappers import DatabaseServiceUrlStringWrapper
 
 
@@ -17,12 +21,30 @@ class NotesDataAccess:
             endpoint='note',
             payload=payload)
 
-        return response.json()
+        if response.status_code == HTTPStatus.CREATED:
+            return response.json()
 
-    def get_all_notes(self):
-        response = RequestHandler.perform_get_request(self._database_service_url, 'note')
+    def get_user_id_notes(self, user_id: int):
+        response = RequestHandler.perform_get_request(
+            url=self._database_service_url,
+            endpoint=f'note/user/{user_id}',)
         return response.json()
 
     def get_note_id(self, note_id: int):
-        response = RequestHandler.perform_get_request(self._database_service_url, f'note/{note_id}')
+        response = RequestHandler.perform_get_request(
+            url=self._database_service_url,
+            endpoint=f'note/{note_id}')
         return response.json()
+
+    def update_note_id(self, note_id: int, note_title: str, note_content: str):
+        payload = {"note_title": note_title, "note_content": note_content}
+        response = RequestHandler.perform_patch_request(
+            url=self._database_service_url,
+            endpoint=f'note/{note_id}',
+            payload=payload)
+        return response
+
+    def delete_note_id(self, note_id: int):
+        RequestHandler.perform_delete_request(
+            url=self._database_service_url,
+            endpoint=f'note/{note_id}')

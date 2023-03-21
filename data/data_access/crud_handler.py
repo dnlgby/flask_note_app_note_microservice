@@ -1,4 +1,4 @@
-#   Copyright (c) 2023 Daniel Gabay
+# Copyright (c) 2023 Daniel Gabay
 
 import requests
 
@@ -41,3 +41,28 @@ class RequestHandler:
         :return: A requests.Response object.
         """
         return requests.post(f"{url}/{endpoint}", json=payload)
+
+    @staticmethod
+    @retry(stop=RETRY_POLICY.STOP_POLICY, wait=RETRY_POLICY.WAIT_POLICY)
+    def perform_patch_request(url: str, endpoint: str, payload: dict) -> requests.Response:
+        """
+        Perform a PATCH request to the specified URL and endpoint with the given payload.
+
+        :param url: The base URL.
+        :param endpoint: The API endpoint.
+        :param payload: A dictionary containing the data to be sent in the request body.
+        :return: A requests.Response object.
+        """
+        return requests.patch(f"{url}/{endpoint}", json=payload)
+
+    @staticmethod
+    @retry(stop=RETRY_POLICY.STOP_POLICY, wait=RETRY_POLICY.WAIT_POLICY)
+    def perform_delete_request(url: str, endpoint: str) -> requests.Response:
+        """
+        Perform a DELETE request to the specified URL and endpoint.
+
+        :param url: The base URL.
+        :param endpoint: The API endpoint.
+        :return: A requests.Response object.
+        """
+        return requests.delete(f"{url}/{endpoint}")

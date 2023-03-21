@@ -4,9 +4,12 @@ import os
 
 from dotenv import load_dotenv
 from flask import Flask
+from flask_injector import FlaskInjector
 from flask_jwt_extended import JWTManager
 from flask_smorest import Api
 
+from di.service_module import ServiceModule
+from resources import NoteBlueprint
 
 def create_app():
     app = Flask(__name__)
@@ -29,7 +32,7 @@ def create_app():
 
     # Flask-smorest documentation
     api = Api(app)
-    # api.register_blueprint(AuthenticationBlueprint)
+    api.register_blueprint(NoteBlueprint)
 
     # JWT - Will set on code for now for developing purposes
     secret_key = os.getenv('JWT_SECRET_KEY')
@@ -40,6 +43,6 @@ def create_app():
     jwt = JWTManager(app)
 
     # Dependency injection
-    # FlaskInjector(app=app, modules=[ConfigurationModule])
+    FlaskInjector(app=app, modules=[ServiceModule])
 
     return app
