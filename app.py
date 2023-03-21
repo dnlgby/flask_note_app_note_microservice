@@ -11,6 +11,7 @@ from flask_smorest import Api
 from di.service_module import ServiceModule
 from resources import NoteBlueprint
 
+
 def create_app():
     app = Flask(__name__)
 
