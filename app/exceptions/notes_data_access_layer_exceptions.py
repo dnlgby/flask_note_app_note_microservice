@@ -1,6 +1,6 @@
 # Copyright (c) 2023 Daniel Gabay
 
-from exceptions.note_service_exception import NoteServiceException
+from app.exceptions.note_service_exception import NoteServiceException
 
 
 class DataAccessLayerException(NoteServiceException):

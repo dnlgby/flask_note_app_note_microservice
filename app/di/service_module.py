@@ -2,9 +2,9 @@
 
 from injector import singleton, Module
 
-from data.data_access.notes_data_access import NotesDataAccess
-from di.wrappers import DatabaseServiceUrlStringWrapper
-from services.note_service import NoteService
+from app.data.data_access.notes_data_access import NotesDataAccess
+from app.di.wrappers import DatabaseServiceUrlStringWrapper
+from app.services.note_service import NoteService
 
 
 class ServiceModule(Module):

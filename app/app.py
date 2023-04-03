@@ -4,16 +4,20 @@ import os
 
 from dotenv import load_dotenv
 from flask import Flask
+from flask_cors import CORS
 from flask_injector import FlaskInjector
 from flask_jwt_extended import JWTManager
 from flask_smorest import Api
 
-from di.service_module import ServiceModule
-from resources import NoteBlueprint
+from app.di.service_module import ServiceModule
+from app.resources import NoteBlueprint
 
 
 def create_app():
     app = Flask(__name__)
+
+    # Cross-Origin Resource Sharing
+    CORS(app)
 
     # Load environment variables from existing '.env' files
     load_dotenv()

@@ -1,15 +1,15 @@
 # Copyright (c) 2023 Daniel Gabay
 
-from typing import List
 from http import HTTPStatus
 
 from flask_injector import inject
 
-from data.data_access.crud_handler import RequestHandler
-from di.wrappers import DatabaseServiceUrlStringWrapper
-from exceptions.notes_data_access_layer_exceptions import NoteIdIsNotFoundException, ServiceInternalException, \
+from app.data.data_access.crud_handler import RequestHandler
+from app.di.wrappers import DatabaseServiceUrlStringWrapper
+from app.exceptions.notes_data_access_layer_exceptions import NoteIdIsNotFoundException, ServiceInternalException, \
     NoNotesForUserId
-from models.note import Note
+from app.models.note import Note
+from app.models.notes_page_response import NotesPageResponse
 
 
 class NotesDataAccess:
@@ -29,12 +29,19 @@ class NotesDataAccess:
         elif response.status_code == HTTPStatus.NOT_FOUND:
             raise NoNotesForUserId("User with the id {user_id} is not found.".format(user_id=user_id))
 
-    def get_user_id_notes(self, user_id: int) -> List[Note]:
+    def get_user_id_notes_page(self, user_id: int, page: int, per_page: int) -> NotesPageResponse:
         response = RequestHandler.perform_get_request(
             url=self._database_service_url,
-            endpoint=f'note/user/{user_id}', )
+            endpoint=f'note/user/{user_id}?page={page}&per_page={per_page}', )
+
         if response.status_code == HTTPStatus.OK:
-            return [Note.from_json(note_json_item) for note_json_item in response.json()]
+            response_json = response.json()
+            response_notes = [Note.from_json(note_json_item) for note_json_item in response_json['notes']]
+            total = response_json['total']
+            page = response_json['page']
+            pages = response_json['pages']
+            return NotesPageResponse(notes=response_notes, total=total, page=page, pages=pages)
+
         elif response.status_code == HTTPStatus.NOT_FOUND:
             raise NoNotesForUserId("Cannot find notes for user id {user_id}.".format(user_id=user_id))
         else:

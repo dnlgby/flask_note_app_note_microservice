@@ -13,3 +13,10 @@ class NoteSchema(Schema):
 class NoteUpdateSchema(Schema):
     note_title = fields.String(required=True)
     note_content = fields.String(required=True)
+
+
+class NotePageSchema(Schema):
+    notes = fields.List(fields.Nested(NoteSchema), required=True)
+    total = fields.Integer(required=True)
+    page = fields.Integer(required=True)
+    pages = fields.Integer(required=True)
